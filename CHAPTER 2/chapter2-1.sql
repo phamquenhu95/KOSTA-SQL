@@ -128,3 +128,30 @@ SELECT NAME, ADDRESS FROM CUSTOMER C
 WHERE EXISTS (SELECT O.CUSTID FROM ORDERS O
 			WHERE O.CUSTID = C.CUSTID);
                 
+alter table newbook
+add constraint ck_price
+check(price > 1000);
+
+/* 차집합 MINUS 연산 */
+select * from customer where address like '대한민국%' and
+custid not in (select distinct(c.custid) from customer c
+join orders o
+on c.custid = o.custid);
+
+/* 대한민국에서 거주하는 고객 중 도서를 주문한 고객의 이름 (intersect 연산, in) */
+select custid, name from customer where address like '대한민국%'
+and
+custid in (select distinct(c.custid) from customer c
+join orders o on c.custid = o.custid);
+
+/* 주문이 있는 고객 이름과 주소 (exists, 상관서브퀴리) */
+select name, address from customer c
+where exists (select o.custid from orders o
+				where o.custid = c.custid);
+                
+/* 제약조건 추가 */
+alter table newbook
+add constraint ck_price
+check(price>1000);
+                
+
